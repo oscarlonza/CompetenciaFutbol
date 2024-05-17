@@ -105,7 +105,6 @@ export const createPartido = async (req, res) => {
       resultadoLocal,
       resultadoVisitante,
       fechaPartido,
-      grupoPartido,
     } = req.body;
 
     // Convertir los resultados a números enteros
@@ -118,8 +117,7 @@ export const createPartido = async (req, res) => {
       !equipoVisitante ||
       isNaN(resultadoLocalInt) || // Verificar si es un número válido
       isNaN(resultadoVisitanteInt) || // Verificar si es un número válido
-      !fechaPartido ||
-      !grupoPartido
+      !fechaPartido
     ) {
       return res.status(400).json({
         message:
@@ -142,7 +140,7 @@ export const createPartido = async (req, res) => {
 
     // Insertar el partido
     await pool.query(
-      "INSERT INTO Partidos(idPartido, equipoLocal, equipoVisitante, resultadoLocal, resultadoVisitante, fechaPartido, grupoPartido) VALUES (?,?,?,?,?,?,?)",
+      "INSERT INTO Partidos(idPartido, equipoLocal, equipoVisitante, resultadoLocal, resultadoVisitante, fechaPartido) VALUES (?,?,?,?,?,?)",
       [
         idPartido,
         equipoLocal,
@@ -150,7 +148,6 @@ export const createPartido = async (req, res) => {
         resultadoLocalInt,
         resultadoVisitanteInt,
         fechaPartido,
-        grupoPartido,
       ]
     );
 
