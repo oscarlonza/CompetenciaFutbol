@@ -23,7 +23,6 @@ import {
   Avatar,
   Tooltip,
 } from "@material-tailwind/react";
-import Teams from "../pages/teams";
 
 const TABS = [
   {
@@ -79,7 +78,39 @@ const TeamsTable = ({ onUserDeleted, onUserAdded }) => {
         });
     }
   };
+  const handleEdit = (id) => {
+    const userToEdit = table.find((equipo) => equipo.idEquipo === id);
+    setEditedUsers((prevEditedUsers) => ({
+      ...prevEditedUsers,
+      [id]: userToEdit,
+    }));
+    setIsModalOpen(true);
+  };
 
+  const handleUpdateEditedUser = (id, field, value) => {
+    setEditedUsers((prevEditedUsers) => ({
+      ...prevEditedUsers,
+      [id]: {
+        ...prevEditedUsers[id],
+        [field]: value,
+      },
+    }));
+  };
+  const handleUpdateUser = (id) => {
+    axios
+      .put(`http://localhost:4000/api/equipo/${id}`, editedUsers[id])
+      .then((response) => {
+        console.log("User updated successfully:", response.data);
+        fetchTable();
+
+        alert("User updated successfully");
+      })
+      .catch((error) => {
+        console.error("Error updating user:", error);
+
+        alert("Error updating user");
+      });
+  };
   const handleInputChange = (e, id) => {
     const { name, value } = e.target;
     setEditedUsers((prevEditedUsers) => ({
@@ -122,7 +153,7 @@ const TeamsTable = ({ onUserDeleted, onUserAdded }) => {
                   setIsFormOpen(false);
                   onUserAdded();
                 }}
-                fetchUsers={fetchTable}
+                fetchTable={fetchTable}
               />
             )}
           </div>
@@ -189,14 +220,16 @@ const TeamsTable = ({ onUserDeleted, onUserAdded }) => {
                         >
                           {table.grupoEquipo}
                         </Typography>
-                        {editedUsers[table.id] && (
+                        {editedUsers[table.idEquipo] && (
                           <EditUserModal
                             isOpen={isModalOpen}
                             onClose={() => setIsModalOpen(false)}
                             user={table}
-                            onUpdateUser={() => handleUpdateUser(table.id)}
+                            onUpdateUser={() =>
+                              handleUpdateUser(table.idEquipo)
+                            }
                             handleInputChange={(e) =>
-                              handleInputChange(e, table.id)
+                              handleInputChange(e, table.idEquipo)
                             }
                             onUpdateEditedUser={handleUpdateEditedUser}
                           />
@@ -235,7 +268,7 @@ const TeamsTable = ({ onUserDeleted, onUserAdded }) => {
                   <td className="p-4 border-b border-blue-gray-50">
                     <Tooltip content="Editar Equipo">
                       <Button
-                        onClick={() => handleEdit(table.id)}
+                        onClick={() => handleEdit(table.idEquipo)}
                         variant="text"
                       >
                         <PencilIcon className="h-4 w-4" />

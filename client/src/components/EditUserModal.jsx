@@ -29,7 +29,7 @@ const EditUserModal = ({
       ...prevUser,
       [name]: value,
     }));
-    onUpdateEditedUser(editedUser.id, name, value);
+    onUpdateEditedUser(editedUser.idEquipo, name, value);
   };
 
   const handleUpdateUser = () => {
@@ -47,28 +47,28 @@ const EditUserModal = ({
       <Card className="mx-auto w-full max-w-[24rem]">
         <CardBody className="flex flex-col gap-4">
           <Typography variant="h4" color="blue-gray">
-            Sign In
+            Editar equipo
           </Typography>
           <Typography
             className="mb-3 font-normal"
             variant="paragraph"
             color="gray"
           >
-            Enter your email and password to Sign In.
+            Ingresa los nuevos datos
           </Typography>
           <Input
             type="text"
             placeholder="Name"
-            name="name"
-            value={editedUser.name}
+            name="nombreEquipo"
+            value={editedUser.nombreEquipo}
             onChange={handleInputChange}
             className="border border-gray-300 rounded-md p-2 mb-2"
           />
           <Input
             type="text"
             placeholder="Last Name"
-            name="lastName"
-            value={editedUser.lastName}
+            name="grupoEquipo"
+            value={editedUser.grupoEquipo}
             onChange={handleInputChange}
             className="border border-gray-300 rounded-md p-2"
           />

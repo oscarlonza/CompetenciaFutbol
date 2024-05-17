@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import axios from "axios";
 import { Button } from "@material-tailwind/react";
-const UserForm = ({ onUserAdded }) => {
+const UserForm = ({ onUserAdded, fetchTable }) => {
   const [nombreEquipo, setNombreEquipo] = useState("");
   const [grupoEquipo, setGrupoEquipo] = useState("");
 
@@ -14,6 +14,7 @@ const UserForm = ({ onUserAdded }) => {
         onUserAdded();
         setNombreEquipo("");
         setGrupoEquipo("");
+        fetchTable();
 
         alert("Equipo created successfully");
       })

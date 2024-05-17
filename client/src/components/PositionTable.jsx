@@ -2,7 +2,8 @@ import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import EditUserModal from "./EditUserModal";
-import UserForm from "./TeamsForm";
+import PositionForm from "./PositionForm";
+import MatchManagement from "./MatchManagement";
 import ImageIcon from "../../public/919510.png";
 import {
   MagnifyingGlassIcon,
@@ -37,7 +38,7 @@ const TABS = [
 
 const TABLE_HEAD = [
   "Grupo",
-  "Pos",
+
   "Equipo",
   "Puntos",
   "PJ",
@@ -83,7 +84,7 @@ const UserManagement = ({ onUserDeleted, onUserAdded }) => {
   };
 
   return (
-    <Card className="h-full w-full justify-center">
+    <Card className="h-full w-full justify-center mb-10">
       <CardHeader floated={false} shadow={false} className="rounded-none">
         <div className="mb-8 flex items-center justify-between gap-8">
           <div>
@@ -111,12 +112,14 @@ const UserManagement = ({ onUserDeleted, onUserAdded }) => {
             </Button>
 
             {isFormOpen && (
-              <UserForm
+              <PositionForm
                 onUserAdded={() => {
                   setIsFormOpen(false);
                   onUserAdded();
                 }}
-                fetchUsers={fetchTable}
+                fetchTable={fetchTable}
+                isOpen={isFormOpen}
+                onClose={() => setIsFormOpen(false)}
               />
             )}
           </div>
@@ -198,17 +201,7 @@ const UserManagement = ({ onUserDeleted, onUserAdded }) => {
                       </div>
                     </div>
                   </td>
-                  <td className="p-4 border-b border-blue-gray-50">
-                    <div className="flex flex-col">
-                      <Typography
-                        variant="small"
-                        color="blue-gray"
-                        className="font-normal"
-                      >
-                        {table.nombreEquipo}
-                      </Typography>
-                    </div>
-                  </td>
+
                   <td className="p-4 border-b border-blue-gray-50">
                     <div className="flex items-center gap-3">
                       <Avatar
@@ -327,7 +320,7 @@ const UserManagement = ({ onUserDeleted, onUserAdded }) => {
       </CardBody>
       <CardFooter className="flex items-center justify-between border-t border-blue-gray-50 p-4">
         <Typography variant="small" color="blue-gray" className="font-normal">
-          {`Total users ${table.length}`}
+          {`Equipos totales ${table.length}`}
         </Typography>
         <div className="flex gap-2">
           <Button variant="outlined" size="sm">
@@ -338,6 +331,7 @@ const UserManagement = ({ onUserDeleted, onUserAdded }) => {
           </Button>
         </div>
       </CardFooter>
+      <MatchManagement></MatchManagement>
     </Card>
   );
 };
