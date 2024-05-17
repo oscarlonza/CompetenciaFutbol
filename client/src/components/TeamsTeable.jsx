@@ -23,7 +23,8 @@ import {
   Avatar,
   Tooltip,
 } from "@material-tailwind/react";
-
+import Swal from "sweetalert2";
+import withReactContent from "sweetalert2-react-content";
 const TABS = [
   {
     label: "All",
@@ -44,6 +45,7 @@ const TeamsTable = ({ onUserDeleted, onUserAdded }) => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isFormOpen, setIsFormOpen] = useState(false);
   const navigate = useNavigate();
+  const MySwal = withReactContent(Swal);
   useEffect(() => {
     fetchTable();
   }, []);
@@ -59,24 +61,43 @@ const TeamsTable = ({ onUserDeleted, onUserAdded }) => {
       });
   };
   const handleDelete = (id) => {
-    console.log(" el ide es : " + id);
-    if (window.confirm("Are you sure you want to delete this teams?")) {
-      axios
-        .delete(`http://localhost:4000/api/equipo/${id}`)
+    MySwal.fire({
+      title: "¿Estas seguro que quieres borrar este equipo?",
+      text: "Esta accion no es revertible",
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonColor: "#3085d6",
+      cancelButtonColor: "#d33",
+      confirmButtonText: "Yes, delete it!",
+    }).then((result) => {
+      if (result.isConfirmed) {
+        axios
+          .delete(`http://localhost:4000/api/equipo/${id}`)
 
-        .then(() => {
-          console.log("Equipo deleted successfully");
-          fetchTable();
-          onUserDeleted();
+          .then(() => {
+            console.log("Equipo deleted successfully");
+            fetchTable();
+            onUserDeleted();
+            MySwal.fire({
+              title: "Eliminado!",
+              text: "Equipo eliminado correctamente",
+              icon: "success",
+            });
+          })
+          .catch((error) => {
+            console.error("Error deleting temas:", error);
 
-          alert("Teams deleted successfully");
-        })
-        .catch((error) => {
-          console.error("Error deleting temas:", error);
-
-          alert("Error deleting teams");
-        });
-    }
+            MySwal.fire({
+              position: "top-end",
+              icon: "error",
+              title: "Oops...",
+              text: "Error al borrar el equipo",
+              showConfirmButton: false,
+              timer: 3000,
+            });
+          });
+      }
+    });
   };
   const handleEdit = (id) => {
     const userToEdit = table.find((equipo) => equipo.idEquipo === id);
@@ -103,12 +124,25 @@ const TeamsTable = ({ onUserDeleted, onUserAdded }) => {
         console.log("User updated successfully:", response.data);
         fetchTable();
 
-        alert("User updated successfully");
+        MySwal.fire({
+          position: "top-end",
+          icon: "success",
+          title: "Equipo actualizado correctamente",
+          showConfirmButton: false,
+          timer: 2000,
+        });
       })
       .catch((error) => {
         console.error("Error updating user:", error);
 
-        alert("Error updating user");
+        MySwal.fire({
+          position: "top-end",
+          icon: "error",
+          title: "Oops...",
+          text: "Error al actualizar el equipo",
+          showConfirmButton: false,
+          timer: 3000,
+        });
       });
   };
   const handleInputChange = (e, id) => {

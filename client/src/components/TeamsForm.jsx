@@ -1,9 +1,12 @@
 import React, { useState } from "react";
 import axios from "axios";
 import { Button } from "@material-tailwind/react";
+import Swal from "sweetalert2";
+import withReactContent from "sweetalert2-react-content";
 const UserForm = ({ onUserAdded, fetchTable }) => {
   const [nombreEquipo, setNombreEquipo] = useState("");
   const [grupoEquipo, setGrupoEquipo] = useState("");
+  const MySwal = withReactContent(Swal);
 
   const handleSubmit = (e) => {
     e.preventDefault();
@@ -16,12 +19,25 @@ const UserForm = ({ onUserAdded, fetchTable }) => {
         setGrupoEquipo("");
         fetchTable();
 
-        alert("Equipo created successfully");
+        MySwal.fire({
+          position: "top-end",
+          icon: "success",
+          title: "Equipo creado correctamente",
+          showConfirmButton: false,
+          timer: 2000,
+        });
       })
       .catch((error) => {
         console.error("Error creating equipo:", error);
 
-        alert("Error creating equipo");
+        MySwal.fire({
+          position: "top-end",
+          icon: "error",
+          title: "Oops...",
+          text: "Error al crear elequipo",
+          showConfirmButton: false,
+          timer: 3000,
+        });
       });
   };
 

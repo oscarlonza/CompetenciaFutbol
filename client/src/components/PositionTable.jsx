@@ -38,7 +38,6 @@ const TABS = [
 
 const TABLE_HEAD = [
   "Grupo",
-
   "Equipo",
   "Puntos",
   "PJ",
@@ -52,6 +51,8 @@ const TABLE_HEAD = [
 const UserManagement = ({ onUserDeleted, onUserAdded }) => {
   const [table, setTable] = useState([]);
   const [searchTerm, setSearchTerm] = useState("");
+  const [currentPage, setCurrentPage] = useState(1);
+  const [matchesPerPage] = useState(10);
   const [editedUsers, setEditedUsers] = useState({});
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isFormOpen, setIsFormOpen] = useState(false);
@@ -82,6 +83,13 @@ const UserManagement = ({ onUserDeleted, onUserAdded }) => {
       },
     }));
   };
+
+  // Paginación
+  const indexOfLastMatch = currentPage * matchesPerPage;
+  const indexOfFirstMatch = indexOfLastMatch - matchesPerPage;
+  const currentMatches = table.slice(indexOfFirstMatch, indexOfLastMatch);
+
+  const paginate = (pageNumber) => setCurrentPage(pageNumber);
 
   return (
     <Card className="h-full w-full justify-center mb-10">
@@ -125,15 +133,7 @@ const UserManagement = ({ onUserDeleted, onUserAdded }) => {
           </div>
         </div>
         <div className="flex flex-col items-center justify-between gap-4 md:flex-row">
-          <Tabs value="all" className="w-full md:w-max">
-            <TabsHeader>
-              {TABS.map(({ label, value }) => (
-                <Tab key={value} value={value}>
-                  &nbsp;&nbsp;{label}&nbsp;&nbsp;
-                </Tab>
-              ))}
-            </TabsHeader>
-          </Tabs>
+          <Tabs value="all" className="w-full md:w-max"></Tabs>
           <div className="w-full md:w-72">
             <Input
               onChange={(e) => setSearchTerm(e.target.value)}
@@ -168,7 +168,7 @@ const UserManagement = ({ onUserDeleted, onUserAdded }) => {
           </thead>
 
           <tbody>
-            {table
+            {currentMatches
               .filter((table) =>
                 table.nombreEquipo
                   .toLowerCase()
@@ -295,24 +295,6 @@ const UserManagement = ({ onUserDeleted, onUserAdded }) => {
                       </Typography>
                     </div>
                   </td>
-                  {/*  <td className="p-4 border-b border-blue-gray-50">
-                    <Tooltip content="Edit User">
-                      <Button
-                        onClick={() => handleEdit(table.id)}
-                        variant="text"
-                      >
-                        <PencilIcon className="h-4 w-4" />
-                      </Button>
-                    </Tooltip>
-                    <Tooltip content="Delet User">
-                      <Button
-                        onClick={() => handleDelete(table.id)}
-                        variant="text"
-                      >
-                        <TrashIcon className="h-4 w-4" />
-                      </Button>
-                    </Tooltip>
-                  </td> */}
                 </tr>
               ))}
           </tbody>
@@ -320,14 +302,24 @@ const UserManagement = ({ onUserDeleted, onUserAdded }) => {
       </CardBody>
       <CardFooter className="flex items-center justify-between border-t border-blue-gray-50 p-4">
         <Typography variant="small" color="blue-gray" className="font-normal">
-          {`Equipos totales ${table.length}`}
+          Equipos totales: {table.length}
         </Typography>
         <div className="flex gap-2">
-          <Button variant="outlined" size="sm">
-            Previous
+          <Button
+            variant="outlined"
+            size="sm"
+            onClick={() => paginate(currentPage - 1)}
+            disabled={currentPage === 1}
+          >
+            Anterior
           </Button>
-          <Button variant="outlined" size="sm">
-            Next
+          <Button
+            variant="outlined"
+            size="sm"
+            onClick={() => paginate(currentPage + 1)}
+            disabled={indexOfLastMatch >= table.length}
+          >
+            Siguiente
           </Button>
         </div>
       </CardFooter>

@@ -8,6 +8,8 @@ import {
   CardFooter,
 } from "@material-tailwind/react";
 
+import Swal from "sweetalert2";
+import withReactContent from "sweetalert2-react-content";
 const UserForm = ({ onUserAdded, fetchTable, isOpen, onClose }) => {
   const [numeroPartido, setNumeroPartido] = useState("");
   const [equipoLocal, setEquipoLocal] = useState("");
@@ -15,6 +17,7 @@ const UserForm = ({ onUserAdded, fetchTable, isOpen, onClose }) => {
   const [resultadoLocal, setResultadoLocal] = useState("");
   const [resultadoVisitante, setResultadoVisitante] = useState("");
   const [fechaPartido, setFechaPartido] = useState("");
+  const MySwal = withReactContent(Swal);
 
   const handleSubmit = (e) => {
     e.preventDefault();
@@ -35,10 +38,26 @@ const UserForm = ({ onUserAdded, fetchTable, isOpen, onClose }) => {
         resetForm();
         fetchTable();
         onClose();
+        MySwal.fire({
+          position: "top-end",
+
+          icon: "success",
+          title: "Partido creado correctamente",
+          showConfirmButton: false,
+          timer: 2000,
+        });
       })
       .catch((error) => {
         console.error("Error al crear el partido:", error);
-        alert("Error al crear el partido");
+        MySwal.fire({
+          position: "top-end",
+          icon: "error",
+          title: "Oops...",
+          text: "Error al crear el partido",
+          target: document.getElementById("PositionForm"),
+          showConfirmButton: false,
+          timer: 3000,
+        });
       });
   };
 
@@ -53,6 +72,7 @@ const UserForm = ({ onUserAdded, fetchTable, isOpen, onClose }) => {
 
   return (
     <Dialog
+      id="PositionForm"
       size="xs"
       open={isOpen}
       onClose={onClose}
