@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { Button } from "@material-tailwind/react";
-import PositionTable from "../components/PositionTable";
-export default function Home() {
+import TeamsTable from "../components/TeamsTeable";
+export default function Teams() {
   const [refreshList, setRefreshList] = useState(false);
 
   const handleUserAdded = () => {
@@ -13,7 +13,7 @@ export default function Home() {
 
   return (
     <div>
-      <PositionTable
+      <TeamsTable
         onUserDeleted={handleUserDeleted}
         onUserAdded={handleUserAdded}
       />
