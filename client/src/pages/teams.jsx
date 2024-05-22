@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { Button } from "@material-tailwind/react";
-import TeamsTable from "../components/TeamsTeable";
+import TeamsTable from "../components/TeamsTable";
 export default function Teams() {
   const [refreshList, setRefreshList] = useState(false);
 

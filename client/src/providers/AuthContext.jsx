@@ -5,6 +5,7 @@ import {
   signInWithEmailAndPassword,
   signOut,
 } from "firebase/auth";
+import { isSupported as isAnalyticsSupported, getAnalytics } from 'firebase/analytics'; // Importa isSupported y getAnalytics de firebase/analytics
 
 // Crear el contexto de autenticación
 const AuthContext = createContext();
@@ -15,6 +16,12 @@ export const AuthProvider = ({ children }) => {
   const [loading, setLoading] = useState(true); // Nueva bandera de carga
 
   useEffect(() => {
+    // Verificar si Analytics es compatible en este entorno
+    if (isAnalyticsSupported()) {
+      // Inicializar Analytics solo si es compatible
+      const analytics = getAnalytics();
+    }
+
     // Verificar el estado de autenticación de Firebase al montar el componente
     const unsubscribe = onAuthStateChanged(auth, (user) => {
       if (user) {
