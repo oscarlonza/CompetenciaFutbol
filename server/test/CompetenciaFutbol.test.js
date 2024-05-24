@@ -1,5 +1,6 @@
 import request from 'supertest';
 import { expect as _expect } from 'chai';
+import moment from 'moment';
 
 import { app } from '../index.js';
 
@@ -11,15 +12,6 @@ const getMockTeam = () => {
     const mockGroupName = `Grupo ${mockTeamSeed}`;
     return { nombreEquipo: mockTeamName, grupoEquipo: mockGroupName };
 }
-
-describe('Get /', () => {
-    it('Expected result 404', async function () {
-        const res = await request(app)
-            .get('/');
-
-        expect(res.status).to.equal(404);
-    });
-});
 
 async function getNewTeamValidated(equipoData, useValidation = true) {
 
@@ -51,6 +43,14 @@ async function getNewTeamValidated(equipoData, useValidation = true) {
     return team;
 }
 
+describe('Get /', () => {
+    it('Expected result 404', async function () {
+        const res = await request(app)
+            .get('/');
+
+        expect(res.status).to.equal(404);
+    });
+});
 
 describe('Pruebas de creación de Equipo > Post /api/equipo', () => {
 
@@ -120,7 +120,7 @@ describe('Pruebas lista de Equipos > Get /api/data', () => {
 
     it(`Se espera resultado de lista de equipos y contiene el equipo ${equipoData.nombreEquipo}`, async function () {
 
-        await getNewTeamValidated(equipoData);
+        const result = await getNewTeamValidated(equipoData);
 
     });
 });
@@ -159,7 +159,6 @@ describe('Pruebas Obtener equipo por Id > Get /api/posiciones/:id', () => {
 
     });
 });
-
 
 describe('Pruebas de edición de Equipo > Put /api/equipo/:id', () => {
 
@@ -243,7 +242,7 @@ describe('Pruebas Eliminar equipo > Delete /api/equipo/:id', () => {
         expect(JSON.parse(res.text).message).to.equal("Equipo eliminado correctamente");
     });
 
-    it(`Error porque se ha buscado un equipo que ya no existe`, async function () {
+    it(`Error al buscar un equipo que ya no existe`, async function () {
         const mockTeam = await getNewTeamValidated();
 
         const deleteResult = await request(app)
@@ -262,12 +261,149 @@ describe('Pruebas Eliminar equipo > Delete /api/equipo/:id', () => {
 
 });
 
+describe('Pruebas de creación de partido > Post /api/partidos', () => {
+
+    const errorMessage = "Todos los campos son requeridos y los resultados deben ser números enteros";
+    it(`Error al crear partido sin Id`, async function () {
+        const mockMatch = {
+            equipoLocal: "Junior",
+            equipoVisitante: "Nacional",
+            resultadoLocal: 4,
+            resultadoVisitante: 2,
+            fechaPartido: Date.now(),
+        };
+
+        const res = await request(app)
+            .post(`/api/partidos`)
+            .send(mockMatch);
+
+        expect(res.status).to.equal(400);
+        expect(JSON.parse(res.text).message).to.equal(errorMessage);
+    });
+
+    it(`Error al crear partido sin equipo local`, async function () {
+        const mockMatch = {
+            idPartido: 1,
+            equipoVisitante: "Nacional",
+            resultadoLocal: 4,
+            resultadoVisitante: 2,
+            fechaPartido: Date.now(),
+        };
+
+        const res = await request(app)
+            .post(`/api/partidos`)
+            .send(mockMatch);
+
+        expect(res.status).to.equal(400);
+        expect(JSON.parse(res.text).message).to.equal(errorMessage);
+    });
+
+    it(`Error al crear partido sin equipo visitante`, async function () {
+        const mockMatch = {
+            idPartido: 1,
+            equipoLocal: "Junior",
+            resultadoLocal: 4,
+            resultadoVisitante: 2,
+            fechaPartido: Date.now(),
+        };
+
+        const res = await request(app)
+            .post(`/api/partidos`)
+            .send(mockMatch);
+
+        expect(res.status).to.equal(400);
+        expect(JSON.parse(res.text).message).to.equal(errorMessage);
+    });
+
+    it(`Error al crear partido sin resultado local`, async function () {
+        const mockMatch = {
+            idPartido: 1,
+            equipoLocal: "Junior",
+            equipoVisitante: "Nacional",
+            resultadoVisitante: 2,
+            fechaPartido: Date.now(),
+        };
+
+        const res = await request(app)
+            .post(`/api/partidos`)
+            .send(mockMatch);
+
+        expect(res.status).to.equal(400);
+        expect(JSON.parse(res.text).message).to.equal(errorMessage);
+    });
+
+    it(`Error al crear partido sin resultado visitante`, async function () {
+        const mockMatch = {
+            idPartido: 1,
+            equipoLocal: "Junior",
+            equipoVisitante: "Nacional",
+            resultadoLocal: 4,
+            fechaPartido: Date.now(),
+        };
+
+        const res = await request(app)
+            .post(`/api/partidos`)
+            .send(mockMatch);
+
+        expect(res.status).to.equal(400);
+        expect(JSON.parse(res.text).message).to.equal(errorMessage);
+    });
+
+    it(`Error al crear partido sin fecha de partido`, async function () {
+        const mockMatch = {
+            idPartido: 1,
+            equipoLocal: "Junior",
+            equipoVisitante: "Nacional",
+            resultadoLocal: 4,
+            resultadoVisitante: 2,
+        };
+
+        const res = await request(app)
+            .post(`/api/partidos`)
+            .send(mockMatch);
+
+        expect(res.status).to.equal(400);
+        expect(JSON.parse(res.text).message).to.equal(errorMessage);
+    });
+
+    it(`Creación de partido Junior 4 vs 2 Nacional`, async function () {
+
+        const getResult = await request(app)
+            .get('/api/partidos');
+
+        expect(getResult.status).to.equal(200);
+        const listMatches = JSON.parse(getResult.text);
+        expect(Array.isArray(listMatches)).to.equal(true);
+        let idPartido = listMatches.length == 0 ? 0 : Math.max(...listMatches.map(o => o.idPartido));
+        const juniorTeam = await getNewTeamValidated({ nombreEquipo: "Junior", grupoEquipo: "A" }, true);
+        const nacionalTeam = await getNewTeamValidated({ nombreEquipo: "Nacional", grupoEquipo: "A" }, true);
+        
+        const mockMatch = {
+            idPartido: (idPartido + 1),
+            equipoLocal: juniorTeam.nombreEquipo,
+            equipoVisitante: nacionalTeam.nombreEquipo,
+            resultadoLocal: 4,
+            resultadoVisitante: 2,
+            fechaPartido: moment().format(),
+        };
+
+        const res = await request(app)
+            .post(`/api/partidos`)
+            .send(mockMatch);
+        
+        expect(res.status).to.equal(200);
+        expect(JSON.parse(res.text).message).to.equal("Partido y participaciones creadas correctamente");
+    });
+
+});
+
+
+
 /*
 // Rutas para los equipos
 
 // Rutas para los partidos
 router.get("/api/partidos", getPartidos);
-router.post("/api/partidos", createPartido);
 router.delete("/api/partidos/:id", deletePartido);
 router.put("/api/partidos/:id", updatePartido);
 router.get("/api/participaciones", getParticipaciones);
