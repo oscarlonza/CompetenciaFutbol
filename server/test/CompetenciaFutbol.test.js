@@ -13,13 +13,11 @@ const getMockTeam = () => {
 }
 
 describe('Get /', () => {
-    it('Expected result 404', (done) => {
-        request(app)
-            .get('/')
-            .expect((res) => {
-                expect(res.status).to.equal(404);
-            })
-            .end(done);
+    it('Expected result 404', async function () {
+        const res = await request(app)
+            .get('/');
+
+        expect(res.status).to.equal(404);
     });
 });
 
@@ -56,73 +54,66 @@ async function getNewTeamValidated(equipoData, useValidation = true) {
 
 describe('Pruebas de creación de Equipo > Post /api/equipo', () => {
 
-    it('Error porque falta el nombre de equipo', (done) => {
+    it('Error porque falta el nombre de equipo', async function () {
         const equipoData = { nombreEquipo: '', grupoEquipo: 'Grupo 1', };
 
-        request(app)
+        const res = await request(app)
             .post('/api/equipo')
-            .send(equipoData)
-            .expect((res) => {
-                expect(res.status).to.equal(400);
-                const { message } = JSON.parse(res.text);
-                expect(message).to.equal("Se requieren nombre del equipo y grupo del equipo");
-            })
-            .end(done);
+            .send(equipoData);
+
+        expect(res.status).to.equal(400);
+        const { message } = JSON.parse(res.text);
+        expect(message).to.equal("Se requieren nombre del equipo y grupo del equipo");
     });
 
-    it('Error porque falta el nombre de grupo', (done) => {
+    it('Error porque falta el nombre de grupo', async function () {
         const equipoData = { nombreEquipo: 'Equipo 1', grupoEquipo: '', };
 
-        request(app)
+        const res = await request(app)
             .post('/api/equipo')
             .send(equipoData)
-            .expect((res) => {
-                expect(res.status).to.equal(400);
-                const { message } = JSON.parse(res.text);
-                expect(message).to.equal("Se requieren nombre del equipo y grupo del equipo");
-            })
-            .end(done);
+
+        expect(res.status).to.equal(400);
+        const { message } = JSON.parse(res.text);
+        expect(message).to.equal("Se requieren nombre del equipo y grupo del equipo");
     });
 
-    it('Error porque faltan ambos, nombre de equipo y nombre de grupo', (done) => {
+    it('Error porque faltan ambos, nombre de equipo y nombre de grupo', async function () {
         const equipoData = { nombreEquipo: '', grupoEquipo: '', };
 
-        request(app)
+        const res = await request(app)
             .post('/api/equipo')
             .send(equipoData)
-            .expect((res) => {
-                expect(res.status).to.equal(400);
-                const { message } = JSON.parse(res.text);
-                expect(message).to.equal("Se requieren nombre del equipo y grupo del equipo");
-            })
-            .end(done);
+
+        expect(res.status).to.equal(400);
+        const { message } = JSON.parse(res.text);
+        expect(message).to.equal("Se requieren nombre del equipo y grupo del equipo");
+
     });
 
     const equipoData = getMockTeam();
-    it(`Creación de equipo "${equipoData.nombreEquipo}" de grupo ${equipoData.grupoEquipo} `, (done) => {
-        request(app)
+    it(`Creación de equipo "${equipoData.nombreEquipo}" de grupo ${equipoData.grupoEquipo} `, async function () {
+
+        const res = await request(app)
             .post('/api/equipo')
-            .send(equipoData)
-            .expect((res) => {
-                expect(res.status).to.equal(200);
-                expect(res.text).to.contains(equipoData.nombreEquipo);
-                expect(res.text).to.contains(equipoData.grupoEquipo);
-            })
-            .end(done);
+            .send(equipoData);
+
+        expect(res.status).to.equal(200);
+        expect(res.text).to.contains(equipoData.nombreEquipo);
+        expect(res.text).to.contains(equipoData.grupoEquipo);
     });
 });
 
 describe('Pruebas lista de Equipos > Get /api/data', () => {
 
-    it('Se espera resultado de lista de equipos', (done) => {
-        request(app)
-            .get('/api/data')
-            .expect((res) => {
-                const { status, text } = res;
-                expect(status).to.equal(200);
-                expect(Array.isArray(JSON.parse(text))).to.equal(true);
-            })
-            .end(done);
+    it('Se espera resultado de lista de equipos', async function () {
+
+        const res = await request(app)
+            .get('/api/data');
+
+        const { status, text } = res;
+        expect(status).to.equal(200);
+        expect(Array.isArray(JSON.parse(text))).to.equal(true);
     });
 
     const equipoData = getMockTeam();
@@ -136,15 +127,14 @@ describe('Pruebas lista de Equipos > Get /api/data', () => {
 
 describe('Pruebas Obtener equipo por Id > Get /api/posiciones/:id', () => {
 
-    it('Error porque el id no existe', (done) => {
-        request(app)
-            .get(`/api/posiciones/-1`)
-            .expect((res) => {
-                expect(res.status).to.equal(404);
-                const { message } = JSON.parse(res.text);
-                expect(message).to.equal("Equipo no encontrado");
-            })
-            .end(done);
+    it('Error porque el id no existe', async function () {
+
+        const res = await request(app)
+            .get(`/api/posiciones/-1`);
+
+        expect(res.status).to.equal(404);
+        const { message } = JSON.parse(res.text);
+        expect(message).to.equal("Equipo no encontrado");
     });
 
 
