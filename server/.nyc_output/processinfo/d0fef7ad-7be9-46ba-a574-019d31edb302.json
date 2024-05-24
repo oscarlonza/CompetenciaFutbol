@@ -1,0 +1,16 @@
+{
+    "parent": null,
+    "pid": 43384,
+    "argv": [
+        "C:\\Program Files\\nodejs\\node.exe",
+        "E:\\Nueva carpeta\\CompetenciaFutbol\\server\\node_modules\\mocha\\bin\\mocha.js"
+    ],
+    "execArgv": [],
+    "cwd": "E:\\Nueva carpeta\\CompetenciaFutbol\\server",
+    "time": 1716589088173,
+    "ppid": 20856,
+    "coverageFilename": "E:\\Nueva carpeta\\CompetenciaFutbol\\server\\.nyc_output\\d0fef7ad-7be9-46ba-a574-019d31edb302.json",
+    "externalId": "",
+    "uuid": "d0fef7ad-7be9-46ba-a574-019d31edb302",
+    "files": []
+}

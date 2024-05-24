@@ -20,6 +20,6 @@ app.use((err, req, res, next) => {
   res.status(500).json({ message: "Something went wrong!" });
 });
 
-app.listen(PORT, () => {
+export const server = app.listen(PORT, () => {
   console.log(`Server is listening on port ${PORT}`);
 });

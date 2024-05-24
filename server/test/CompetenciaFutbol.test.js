@@ -2,7 +2,7 @@ import request from 'supertest';
 import { expect as _expect } from 'chai';
 import moment from 'moment';
 
-import { app } from '../index.js';
+import { app, server } from '../index.js';
 
 const expect = _expect;
 
@@ -101,6 +101,9 @@ async function getNewMatchValidated(equipoLocal, equipoVisitante, resultadoLocal
     return match;
 }
 
+after(async () => {
+    server.close();
+});
 
 describe('Get /', () => {
     it('Expected result 404', async function () {
@@ -719,11 +722,11 @@ describe('Pruebas de la tabla de posiciones > Get /api/tabla-posiciones', () => 
         const totalMatches = 10;
         for (let i = 0; i < totalMatches; i++) {
             const lastMatchAdded = await getNewMatchValidated(localTeam, guestTeam, 4, 3, true);
-            console.log(`Match created ${lastMatchAdded.idPartido} > ${lastMatchAdded.equipoLocal} (${lastMatchAdded.resultadoLocal}) VS (${lastMatchAdded.resultadoVisitante}) ${lastMatchAdded.equipoVisitante} `);        
-            
+            console.log(`Match created ${lastMatchAdded.idPartido} > ${lastMatchAdded.equipoLocal} (${lastMatchAdded.resultadoLocal}) VS (${lastMatchAdded.resultadoVisitante}) ${lastMatchAdded.equipoVisitante} `);
+
             matches.push(lastMatchAdded);
         }
-        
+
         const res = await request(app)
             .get('/api/tabla-posiciones');
 
@@ -731,13 +734,13 @@ describe('Pruebas de la tabla de posiciones > Get /api/tabla-posiciones', () => 
         const table = JSON.parse(res.text);
         const localTable = table.find(x => x.nombreEquipo == localTeam.nombreEquipo);
         expect(localTable).to.not.equal(null);
-        expect(localTable.puntos, 'Puntos de equipo local').to.equal((3*totalMatches).toString());
+        expect(localTable.puntos, 'Puntos de equipo local').to.equal((3 * totalMatches).toString());
         expect(localTable.PJ, 'Partidos jugados de equipo local').to.equal(totalMatches);
         expect(localTable.PG, 'Partidos ganados de equipo local').to.equal(totalMatches.toString());
         expect(localTable.PP, 'Partidos perdidos de equipo local').to.equal('0');
         expect(localTable.PE, 'Partidos empatados de equipo local').to.equal('0');
-        expect(localTable.GF, 'Goles a favor de equipo local').to.equal((4*totalMatches).toString());
-        expect(localTable.GC, 'Goles en contra de equipo local').to.equal((3*totalMatches).toString());
+        expect(localTable.GF, 'Goles a favor de equipo local').to.equal((4 * totalMatches).toString());
+        expect(localTable.GC, 'Goles en contra de equipo local').to.equal((3 * totalMatches).toString());
 
         const guestTable = table.find(x => x.nombreEquipo == guestTeam.nombreEquipo);
         expect(guestTable).to.not.equal(null);
@@ -746,15 +749,9 @@ describe('Pruebas de la tabla de posiciones > Get /api/tabla-posiciones', () => 
         expect(guestTable.PG, 'Partidos ganados de equpo visitante').to.equal('0');
         expect(guestTable.PP, 'Partidos perdidos de equpo visitante').to.equal(totalMatches.toString());
         expect(guestTable.PE, 'Partidos empatados de equpo visitante').to.equal('0');
-        expect(guestTable.GF, 'Goles a favor de equipo visitante').to.equal((3*totalMatches).toString());
-        expect(guestTable.GC, 'Goles en contra de equipo visitante').to.equal((4*totalMatches).toString());
+        expect(guestTable.GF, 'Goles a favor de equipo visitante').to.equal((3 * totalMatches).toString());
+        expect(guestTable.GC, 'Goles en contra de equipo visitante').to.equal((4 * totalMatches).toString());
+
     });
 });
-
-/*
-// Rutas para los equipos
-
-// Rutas para los partidos
-router.get("/api/tabla-posiciones", getTablaPosiciones);*/
-
 
