@@ -1,0 +1,149 @@
+...\server> npm run test
+
+> gestion-posiciones-futbol-app@1.0.0 test
+> mocha
+
+E:\Nueva carpeta\CompetenciaFutbol\server
+Server is listening on port 4000
+
+
+  Get /
+    ✔ Expected result 404
+
+  Pruebas de creación de Equipo > Post /api/equipo
+    ✔ Error porque falta el nombre de equipo
+    ✔ Error porque falta el nombre de grupo
+    ✔ Error porque faltan ambos, nombre de equipo y nombre de grupo
+    ✔ Creación de equipo "Equipo 1716587222222" de grupo Grupo 1716587222222  (59ms)
+
+  Pruebas lista de Equipos > Get /api/data
+    ✔ Se espera resultado de lista de equipos
+    ✔ Se espera resultado de lista de equipos y contiene el equipo Equipo 1716587222222 (39ms)
+
+  Pruebas Obtener equipo por Id > Get /api/posiciones/:id
+    ✔ Error porque el id no existe
+    ✔ Se espera resultado con equipo para Equipo 1716587222222  (42ms)
+
+  Pruebas de edición de Equipo > Put /api/equipo/:id
+    ✔ Error porque falta el nombre de equipo
+    ✔ Error porque falta el nombre de grupo (39ms)
+    ✔ Error porque faltan ambos, nombre de equipo y nombre de grupo
+    ✔ Modificar un equipo correctamente (56ms)
+
+  Pruebas Eliminar equipo > Delete /api/equipo/:id
+    ✔ Se espera Eliminar un equipo (48ms)
+    ✔ Error al buscar un equipo que ya no existe (60ms)
+
+  Pruebas de creación de partido > Post /api/partidos
+    ✔ Error al crear partido sin Id
+    ✔ Error al crear partido sin equipo local
+    ✔ Error al crear partido sin equipo visitante
+    ✔ Error al crear partido sin resultado local
+    ✔ Error al crear partido sin resultado visitante
+    ✔ Error al crear partido sin fecha de partido
+    ✔ Creación de partido Junior 4 vs 2 Nacional (110ms)
+
+  Pruebas lista de Partidos > Get /api/partidos
+    ✔ Se espera resultado de lista de equipos
+    ✔ Se agrega partido Envigado 3 vs 5 Junior y se espera que esté contendido en lista de partidos (118ms)
+
+  Pruebas de edición de Partido > Put /api/partidos/:id
+    ✔ Error porque falta la fecha de partido (130ms)
+    ✔ Error porque falta el grupo del partido (116ms)
+    ✔ Error porque faltan ambos, fehca de partido y grupo de partido (140ms)
+    ✔ Modificar un partido correctamente (132ms)
+
+  Pruebas Eliminar partido > Delete /api/partidos/:id
+Error al eliminar partido: Error: Cannot delete or update a parent row: a foreign key constraint fails (`CompetenciaFutbol`.`Participacion`, CONSTRAINT `Participacion_ibfk_1` FOREIGN KEY (`idPartido`) REFERENCES `Partidos` (`idPartido`))
+{
+  code: 'ER_ROW_IS_REFERENCED_2',
+  errno: 1451,
+  sql: "DELETE FROM Partidos WHERE idPartido = '290'",
+  sqlState: '23000',
+  sqlMessage: 'Cannot delete or update a parent row: a foreign key constraint fails (`CompetenciaFutbol`.`Participacion`, CONSTRAINT `Participacion_ibfk_1` FOREIGN KEY (`idPartido`) REFERENCES `Partidos` (`idPartido`))'
+}
+    1) Se espera Eliminar un partido
+Error al eliminar partido: Error: Cannot delete or update a parent row: a foreign key constraint fails (`CompetenciaFutbol`.`Participacion`, CONSTRAINT `Participacion_ibfk_1` FOREIGN KEY (`idPartido`) REFERENCES `Partidos` (`idPartido`))
+{
+  code: 'ER_ROW_IS_REFERENCED_2',
+  errno: 1451,
+  sql: "DELETE FROM Partidos WHERE idPartido = '291'",
+  sqlState: '23000',
+  sqlMessage: 'Cannot delete or update a parent row: a foreign key constraint fails (`CompetenciaFutbol`.`Participacion`, CONSTRAINT `Participacion_ibfk_1` FOREIGN KEY (`idPartido`) REFERENCES `Partidos` (`idPartido`))'
+}
+    2) Error al buscar un partido que ya no existe
+
+  Pruebas lista de participaciones > Get /api/participaciones
+    ✔ Se espera resultado de lista de participaciones
+
+  Pruebas de la tabla de posiciones > Get /api/tabla-posiciones
+Match created 292 > Equipo 1716587223917 (8) VS (2) Equipo 1716587223954 
+    ✔ Se crea 1 partido entre dos nuevos equipos y el resultado es una victoria para el local (8-2) (213ms)
+Match created 293 > Equipo 1716587224131 (3) VS (5) Equipo 1716587224164 
+    3) Se crea 1 partido entre dos nuevos equipos y el resultado es una victoria para el visitante (3-5)
+Match created 294 > Equipo 1716587224312 (2) VS (2) Equipo 1716587224344 
+    4) Se crea 1 partido entre dos nuevos equipos y el resultado es un empate (2-2)
+Match created 295 > Chelsea 1716587222224 (4) VS (3) Arsenal 1716587222224 
+Match created 296 > Chelsea 1716587222224 (4) VS (3) Arsenal 1716587222224 
+Match created 297 > Chelsea 1716587222224 (4) VS (3) Arsenal 1716587222224 
+Match created 298 > Chelsea 1716587222224 (4) VS (3) Arsenal 1716587222224 
+Match created 299 > Chelsea 1716587222224 (4) VS (3) Arsenal 1716587222224 
+Match created 300 > Chelsea 1716587222224 (4) VS (3) Arsenal 1716587222224 
+Match created 301 > Chelsea 1716587222224 (4) VS (3) Arsenal 1716587222224 
+Match created 302 > Chelsea 1716587222224 (4) VS (3) Arsenal 1716587222224 
+Match created 303 > Chelsea 1716587222224 (4) VS (3) Arsenal 1716587222224 
+Match created 304 > Chelsea 1716587222224 (4) VS (3) Arsenal 1716587222224 
+    ✔ Se crean 10 partidos entre dos nuevos equipos, Chelsea 1716587222224 y Arsenal 1716587222224, todos los partidos los gana Chelsea y en todos los partidos quedan (4-3) (1186ms)
+
+
+  31 passing (3s)
+  4 failing
+
+  1) Pruebas Eliminar partido > Delete /api/partidos/:id
+       Se espera Eliminar un partido:
+
+      AssertionError: expected 500 to equal 200
+      + expected - actual
+
+      -500
+      +200
+
+      at Context.<anonymous> (file:///E:/Nueva%20carpeta/CompetenciaFutbol/server/test/CompetenciaFutbol.test.js:562:31)
+      at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+
+  2) Pruebas Eliminar partido > Delete /api/partidos/:id
+       Error al buscar un partido que ya no existe:
+
+      AssertionError: expected 500 to equal 200
+      + expected - actual
+
+      -500
+      +200
+
+      at Context.<anonymous> (file:///E:/Nueva%20carpeta/CompetenciaFutbol/server/test/CompetenciaFutbol.test.js:574:40)
+      at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+
+  3) Pruebas de la tabla de posiciones > Get /api/tabla-posiciones
+       Se crea 1 partido entre dos nuevos equipos y el resultado es una victoria para el visitante (3-5):
+
+      Partidos ganados de equipo local
+      + expected - actual
+
+      -1
+      +0
+
+      at Context.<anonymous> (file:///E:/Nueva%20carpeta/CompetenciaFutbol/server/test/CompetenciaFutbol.test.js:661:70)
+      at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+
+  4) Pruebas de la tabla de posiciones > Get /api/tabla-posiciones
+       Se crea 1 partido entre dos nuevos equipos y el resultado es un empate (2-2):
+
+      Partidos ganados de equipo local
+      + expected - actual
+
+      -1
+      +0
+
+      at Context.<anonymous> (file:///E:/Nueva%20carpeta/CompetenciaFutbol/server/test/CompetenciaFutbol.test.js:695:70)
+      at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+
