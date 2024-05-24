@@ -6,7 +6,7 @@ import indexRoutes from "./routes/index.routes.js";
 import CompetenciaFutbolRoutes from "./routes/CompetenciaFutbol.controller.routes.js";
 import { PORT } from "./config.js";
 
-const app = express();
+export const app = express();
 const __dirname = dirname(fileURLToPath(import.meta.url));
 console.log(__dirname);
 

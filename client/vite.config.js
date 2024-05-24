@@ -8,6 +8,9 @@ export default defineConfig({
     // add the line below to add jsdom to vite
     environment: 'jsdom',
     globals: true,
-    testTimeout: 20000
-  }
+    testTimeout: 20000,
+    coverage: {
+      reporter: ['text', 'lcov']
+    }
+  },
 })
